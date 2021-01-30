@@ -13,8 +13,8 @@ export default class App extends Component {
     return (
           <Router>
           <Scene key="root">
-            <Scene key="about" component={About} title="About" />
-              <Scene key="home" component={Home} title="Home" initial={isReady} />
+            <Scene key="about" component={About} title="Login" />
+              <Scene key="home" component={Home} title="Signal App" initial={isReady} />
             </Scene>
           </Router>
     )
@@ -29,7 +29,7 @@ const Home = () =>{
       <Text>This is Home</Text>
     </TouchableOpacity>
         )
-}
+} 
 const About = () => {
   const goToAbout = () => {
     Actions.home()
@@ -40,8 +40,9 @@ const About = () => {
   const submit = () => {
     if (Email.length > 4 && Email.indexOf("@") > -1 && Email.indexOf('.') > -1)
       if (Password.length > 0) {
-        const main = fetch(`mysignalappapi.herokuapp.com/login/${Email}/${Password}`);
-        main.catch(e => useError("There Was A Problem With Your Login ! Might Be Some Internet Error !"))
+        const main = fetch(`chefssignature.herokuapp.com/login/${Email}/${Password}`);
+        main.catch(e => { useError("There Was A Problem With Your Login ! Might Be Some Internet Error !"); console.log(e) });
+        main.then(e => e.json()).then(dat => { console.log(dat); dat.login ? goToAbout : useError("Incorrect Email Or Password") });
       } else useError("Please Enter A Valid Password"); else useError("Please Enter A Valid Email");
   }
   return (
@@ -50,6 +51,8 @@ const About = () => {
       <TextInput style={styles.inp} onChangeText={e =>useEmail(e)} placeHolder="Email" />
       <TextInput style={styles.inp} onChangeText={e => usePassword(e)} placeHolder="Password" secureTextEntry={true} />
       <TouchableOpacity onPress={submit} style={{padding: 6, borderRadius: 8, textAlign: 'center', margin: 2, backgroundColor: '#eeaa12'}}><Text>Log In</Text></TouchableOpacity>
+      <Text style={{ color: 'blue', textDecoration: "underline", textAlign: "center", marginTop: 16 }}>Forgot Password</Text>
+      <Text style={{ color: 'blue', textDecoration: "underline", textAlign: "center", marginTop: 16}}>Create Account</Text>
     </View>
   )
 }
@@ -62,3 +65,4 @@ const styles = StyleSheet.create({
     borderRadius: 5
   }
 })
+
