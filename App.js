@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -22,14 +22,20 @@ export default class App extends Component {
     )
   }
 }
-const Home = async () => {
-  const [Cont, useCont] = useState((<ActivityIndicator size="large" color="#00ff00" />))
-  const main = await fetch("https://chefssignature.herokuapp.com/api/posts");
-  main.catch(e => useCont((<Text>hi</Text>)));
-  main.then(e => e.json).then(data => );
+const Home = () => {
+  const [Cont, useCont] = useState(null);
+  useEffect(() => {
+    const main = fetch("https://chefssignature.herokuapp.com/apiji/posts");
+    main.catch(e => useCont(404));
+    main.then(e => e.json()).then(data => useCont(data))
+  }, []);
   return (
     <View style={styles.home}>
-      <View>{Cont}</View>
+      <View>{Cont ? ((Cont != 404) ? (Cont.map((v, i) => (
+         (<Text>{v.body}</Text>)
+      ))) : (<View style={{ marginTop: "40%", borderRadius: 12, padding: 6, marginLeft: 18, marginRight: 18, textAlign: 'center', backgroundColor: '#ecf0f1'}}>
+        <Text style={{fontSize: 17, color: 'red'}}>Error !!! Might Be Internet Disconnectivity !!!</Text>
+      </View>)): (<ActivityIndicator style={{margin: 30}} size="large" color="#00ff00" />) }</View>
     </View>
         )
 } 
